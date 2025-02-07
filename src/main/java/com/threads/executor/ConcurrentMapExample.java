@@ -5,16 +5,16 @@ import java.util.concurrent.ConcurrentMap;
 
 public class ConcurrentMapExample {
     public static void main(String[] args) {
-        ConcurrentHashMap<String, Integer> cMap = new ConcurrentHashMap<>();
-        new Thread(new FirstWorker(cMap)).start();
-        new Thread(new SecondWorker(cMap)).start();
+//        ConcurrentHashMap<String, Integer> cMap = new ConcurrentHashMap<>();
+//        new Thread(new FirstWorker(cMap)).start();
+//        new Thread(new SecondWorker(cMap)).start();
     }
 }
 
-class FirstWorker implements Runnable {
+class FirstWorker2 implements Runnable {
     private ConcurrentMap<String, Integer> cMap;
 
-    public FirstWorker(ConcurrentMap<String, Integer> map) {
+    public FirstWorker2(ConcurrentMap<String, Integer> map) {
         this.cMap = map;
     }
 
@@ -34,10 +34,10 @@ class FirstWorker implements Runnable {
     }
 }
 
-class SecondWorker implements Runnable {
+class SecondWorker3 implements Runnable {
     private ConcurrentMap<String, Integer> cMap;
 
-    public SecondWorker(ConcurrentMap<String, Integer> map) {
+    public SecondWorker3(ConcurrentMap<String, Integer> map) {
         this.cMap = map;
     }
 

@@ -36,14 +36,14 @@ public class ProducerConaumwneReentrenatLock {
         Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                increment();
+                //increment();
             }
         });
 
         Thread t2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                increment();
+                //increment();
             }
         });
 

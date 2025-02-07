@@ -5,13 +5,13 @@ public class OpenClosedPrinciple {
     public static void main(String[] args) {
         PaymentProcesser paymentProcesser = new PaymentProcesser();
 
-        PaymentMethod creditCardPayment = new CreditCardPayment();
-        PaymentMethod upiPaymentMethod = new UpiPayment();
-        PaymentMethod payPalPaymentMethod = new PayPalPayment();
+//        PaymentMethod creditCardPayment = new CreditCardPayment();
+//        PaymentMethod upiPaymentMethod = new UpiPayment();
+//        PaymentMethod payPalPaymentMethod = new PayPalPayment();
 
-        paymentProcesser.proccessPayment(creditCardPayment, 399.99);
-        paymentProcesser.proccessPayment(upiPaymentMethod, 99.5);
-        paymentProcesser.proccessPayment(payPalPaymentMethod, 299.7);
+//        paymentProcesser.proccessPayment(creditCardPayment, 399.99);
+//        paymentProcesser.proccessPayment(upiPaymentMethod, 99.5);
+//        paymentProcesser.proccessPayment(payPalPaymentMethod, 299.7);
     }
 }
 
@@ -21,7 +21,7 @@ class PaymentProcesser {
     }
 }
 
-class PayPalPayment implements PaymentMethod {
+class PayPalPayment1 implements PaymentMethod {
 
     @Override
     public boolean processPayment(double amount) {
@@ -50,7 +50,7 @@ class UpiPayment implements PaymentMethod {
     }
 }
 
-class CreditCardPayment implements PaymentMethod {
+class CreditCardPayment2 implements PaymentMethod {
 
     @Override
     public boolean processPayment(double amount) {
