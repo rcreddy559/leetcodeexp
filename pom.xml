@@ -64,6 +64,12 @@
 			<artifactId>logback-classic</artifactId>
 			<!--<version>1.4.4</version>-->
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
