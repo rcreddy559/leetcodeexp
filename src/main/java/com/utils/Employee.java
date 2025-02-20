@@ -10,19 +10,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Employee {
-    // Fields
-    private String employeeId;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phoneNumber;
-    private String department;
-    private String position;
-    private double salary;
-    private Date hireDate;
-    private boolean isActive;
-    private List<Address> addresses;
+    public class Employee {
+        // Fields
+        private String employeeId;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String phoneNumber;
+        private Department department;
+        private String position;
+        private double salary;
+        private Date hireDate;
+        private boolean isActive;
+        private List<Address> addresses;
 
     // Getters and Setters
     public String getEmployeeId() {
@@ -65,11 +65,11 @@ public class Employee {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getDepartment() {
+    public Department getDepartment() {
         return department;
     }
 
-    public void setDepartment(String department) {
+    public void setDepartment(Department department) {
         this.department = department;
     }
 

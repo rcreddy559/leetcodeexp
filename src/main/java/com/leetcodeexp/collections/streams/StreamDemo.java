@@ -57,23 +57,7 @@ public class StreamDemo {
         });
     }
 
-    public static void findMaxConsecutiveOnes() {
-        int[] nums = new int[] { 0, 1, 0, 0, 0, 0, 1, 1, 1, 1 };
-        int maxCount = 0;
-        int currentCount = 0;
-
-        for (int num : nums) {
-            if (num == 1) {
-                currentCount++; // Increment count if 1 is found
-                maxCount = Math.max(maxCount, currentCount);
-            } else {
-                currentCount = 0; // Reset count if 0 is found
-            }
-        }
-        System.out.println(maxCount);
-    }
-
     public static void main(String[] args) {
-        findMaxConsecutiveOnes();
+        
     }
 }

@@ -1,11 +1,9 @@
 package com.pros;
 
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
 public class CodingExamples {
-    public static void main(String[] args) {
-        // findMedianOfArray();
-        // System.out.println(factorial(5));
-        generateFibonacci(10);
-    }
 
     private static void generateFibonacci(int n) {
         int a = 0, b = 1;
@@ -38,5 +36,70 @@ public class CodingExamples {
             median = (my_array[n / 2] + my_array[n / 2 + 1]) / 2d;
         }
         System.out.println("Median is:" + median);
+    }
+
+    public static void findMaxConsecutiveOnes() {
+        int[] nums = new int[] { 0, 1, 0, 0, 0, 0, 1, 1, 1, 1 };
+        int maxCount = 0;
+        int currentCount = 0;
+
+        for (int num : nums) {
+            if (num == 1) {
+                currentCount++; // Increment count if 1 is found
+                maxCount = Math.max(maxCount, currentCount);
+            } else {
+                currentCount = 0; // Reset count if 0 is found
+            }
+        }
+        System.out.println(maxCount);
+    }
+
+    /*
+     * Reverse alternate characters in a string efficiently
+     */
+    static void reverseAlternateiveChars() {
+        String str = "Helloworld";
+        System.out.println("Original String: " + str);
+        char[] charArray = str.toCharArray();
+        for (int i = 0; i < str.length(); i += 2) {
+            var temp = charArray[i];
+            charArray[i] = charArray[i + 1];
+            charArray[i + 1] = temp;
+        }
+        System.out.println("after String: " + new String(charArray));
+    }
+
+    /*
+     * Find the 3rd largest number in an array without sorting
+     */
+    static void find3rdLargestNumber() {
+        int[] arr = { 432, 856, 17, 392, 684, 929, 234, 115, 763, 549 };
+        int first = Integer.MIN_VALUE;
+        int second = Integer.MIN_VALUE;
+        int third = Integer.MIN_VALUE;
+        if (arr.length < 3) {
+            System.out.println("Invalid Input");
+            return;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] > first) {
+                third = second;
+                second = first;
+                first = arr[i];
+            } else if (arr[i] > second) {
+                third = second;
+                second = arr[i];
+            } else if (arr[i] > third) {
+                third = arr[i];
+            }
+        }
+
+        Arrays.stream(arr).sorted().forEach(n -> System.out.print(n + ", "));
+        System.out.println("Third largest number is: " + third);
+
+    }
+
+    public static void main(String[] args) {
+        find3rdLargestNumber();
     }
 }
