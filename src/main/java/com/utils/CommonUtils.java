@@ -26,7 +26,9 @@ public class CommonUtils {
                 String[] streets = { "Main St", "1st Ave", "2nd St", "3rd Ave", "Park Ave", "Maple Dr", "Oak St",
                                 "Pine Ln", "Willow Rd", "Cedar Ct" };
 
-                for (int i = 1; i <= 30; i++) {
+                String[] departments = Arrays.stream(Department.values()).map(Enum::name).toArray(String[]::new);
+
+                for (int i = 1; i <= 10; i++) {
                         // Generate random data for each employee
                         String employeeId = "E" + String.format("%03d", i); // Formats like E001, E002, etc.
                         String firstName = firstNames[random.nextInt(firstNames.length)];
@@ -34,13 +36,13 @@ public class CommonUtils {
                         String email = firstName.toLowerCase() + "." + lastName.toLowerCase() + "@example.com";
                         String phoneNumber = String.format("%03d-%03d-%04d", random.nextInt(1000), random.nextInt(1000),
                                         random.nextInt(10000));
-                        Department department = Department.values()[random.nextInt(Department.values().length)]; // Random
-                                                                                                                 // department
+                        // Random
+                        // department
                         String position = "Position " + i; // Or generate random positions
                         double salary = 50000 + random.nextInt(50000); // Salary between 50k and 100k
                         Date hireDate = new Date(System.currentTimeMillis()
-                                        - (long) random.nextInt(365 * 5 * 24 * 60 * 60 * 1000)); // Hired within the
-                                                                                                 // last 5 years
+                                        - (long) random.nextInt(365 * 5 * 24 * 60 * 60 * 10)); // Hired within the
+                                                                                               // last 5 years
                         boolean isActive = random.nextBoolean();
 
                         List<Address> addresses = new ArrayList<>();
@@ -54,14 +56,13 @@ public class CommonUtils {
                         addresses.add(address);
 
                         Employee employee = new Employee(employeeId, firstName, lastName, email, phoneNumber,
-                                        department, position, salary, hireDate, isActive, addresses);
+                                        departments[random.nextInt(5)], position, salary, hireDate, isActive,
+                                        addresses);
                         employees.add(employee);
                 }
 
                 // Print the employee data (or do whatever you need with it)
-                for (Employee emp : employees) {
-                        System.out.println(emp);
-                }
+
                 System.out.println("Total Employees inserted : " + employees.size());
                 return employees;
         }

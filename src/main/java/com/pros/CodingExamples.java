@@ -99,7 +99,32 @@ public class CodingExamples {
 
     }
 
+    /*
+     * Max Difference Between Adjacent Elements
+     * Task: Find the maximum absolute difference between adjacent elements in a
+     * sorted list.
+     * Input: List<Integer>
+     * Output: int
+     * Example: [2, 4, 1, 0] → 3 (after sorting: [0, 1, 2, 4], max diff is 4-1=3)
+     * 
+     */
+    static void maxDifferenceBetweenAdjacentElements() {
+        int[] arr = { 2, 4, 1, 0 };
+
+        int max = 0;
+
+        for (int i = 1; i < arr.length; i++) {
+            max = Math.max(max, arr[i - 1] - arr[i]);
+        }
+
+        int maxStream = IntStream.range(1, arr.length)
+                .map(i -> arr[i - 1] - arr[i]).max().getAsInt();
+
+        System.out.println(max);
+        System.out.println(maxStream);
+    }
+
     public static void main(String[] args) {
-        find3rdLargestNumber();
+        maxDifferenceBetweenAdjacentElements();
     }
 }

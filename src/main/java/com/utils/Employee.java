@@ -2,6 +2,7 @@ package com.utils;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Objects;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,19 +11,29 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-    public class Employee {
-        // Fields
-        private String employeeId;
-        private String firstName;
-        private String lastName;
-        private String email;
-        private String phoneNumber;
-        private Department department;
-        private String position;
-        private double salary;
-        private Date hireDate;
-        private boolean isActive;
-        private List<Address> addresses;
+public class Employee {
+
+    private String employeeId;
+
+    private String firstName;
+
+    private String lastName;
+
+    private String email;
+
+    private String phoneNumber;
+
+    private String department;
+
+    private String position;
+
+    private double salary;
+
+    private Date hireDate;
+
+    private boolean isActive;
+
+    private List<Address> addresses;
 
     // Getters and Setters
     public String getEmployeeId() {
@@ -65,11 +76,11 @@ import lombok.Setter;
         this.phoneNumber = phoneNumber;
     }
 
-    public Department getDepartment() {
+    public String getDepartment() {
         return department;
     }
 
-    public void setDepartment(Department department) {
+    public void setDepartment(String department) {
         this.department = department;
     }
 
@@ -121,4 +132,22 @@ import lombok.Setter;
                 ", isActive=" + isActive +
                 '}';
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(employeeId, firstName, lastName);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Employee other = (Employee) obj;
+        return Objects.equals(employeeId, other.employeeId) &&
+                Objects.equals(firstName, other.firstName) &&
+                Objects.equals(lastName, other.lastName);
+    }
+
 }
