@@ -82,4 +82,19 @@ public class CommonUtils {
 
                 return list;
         }
+
+        public static List<Product> getProducts() {
+                return Arrays.asList(
+                        new Product("Laptop", "Electronics", 1200),
+                        new Product("Phone", "Electronics", 1000),
+                        new Product("Tablet", "Electronics", 800),
+                        new Product("Book", "Books", 25),
+                        new Product("Notebook", "Books", 15),
+                        new Product("Pen", "Stationery", 5),
+                        new Product("Pencil", "Stationery", 3),
+                        new Product("Eraser", "Stationery", 2),
+                        new Product("Keyboard", "Electronics", 75), // Added for testing
+                        new Product("Mouse", "Electronics", 30) // Added for testing
+                );
+        }
 }
