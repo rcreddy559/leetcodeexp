@@ -334,7 +334,40 @@ public class CodingExamples {
         System.out.println(Arrays.toString(runningTotal));
     }
 
+    /*
+     * Implementing a Sliding Window:
+     * 
+     * Problem: Given a list of integers, calculate the average of each sliding
+     * window of size k. For example, if k = 3, the first average is of the first 3
+     * elements, the second average is of the 2nd, 3rd, and 4th elements, and so on.
+     * 
+     * Solution: Similar to running totals, this requires a way to access a "window"
+     * of elements. Again, IntStream.range and subList (if you convert to a List)
+     * can be useful.
+     */
+    static void implementingSlidingWindow() {
+        int[] numbers = { 1, 4, 2, 10, 2, 3, 1, 0, 20 };
+        int[] slidingArray = new int[numbers.length];
+        final int k = 4;
+        int max = 0;
+        int subSum = 0;
+        int j = 0;
+
+        for (int i = 0; i < numbers.length; i++) {
+            subSum += numbers[i];
+
+            if (i >= k - 1) {
+                max = Math.max(subSum, max);
+                slidingArray[j] = subSum;
+                subSum -= numbers[j];
+                j++;
+            }
+        }
+        System.out.println(max);
+        System.out.println(Arrays.toString(slidingArray));
+    }
+
     public static void main(String[] args) {
-        calculatingRunningTotals();
+        implementingSlidingWindow();
     }
 }

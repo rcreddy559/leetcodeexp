@@ -21,6 +21,8 @@ public class Subarray {
     public static void main(String[] args) {
         System.out.println(findMaxSumSubarray(new int[] { 2, 1, 5, 1, 3, 2 }, 3)); // Output: 9
         System.out.println(findMaxSumSubarray(new int[] { 2, 3, 4, 1, 5 }, 2)); // Output: 7
+System.out.println(findMaxSumSubarray(new int[] { 2, 3, 4, 1, 5 }, 2)); // Output: 7
+        };
     }
     
 }
