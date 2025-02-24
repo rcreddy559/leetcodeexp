@@ -1,6 +1,7 @@
 package com.pros;
 
 import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,6 +132,51 @@ public class StreamDemo {
         }
     }
 
+    // Example with sum of salaries per department
+    static void sumSalariesPerDepartment() {
+        Map<String, Double> sumSalariesPerDept = employees.stream()
+                .collect(Collectors.groupingBy(Employee::getDepartment, Collectors.summingDouble(Employee::getSalary)));
+        for (String dep : sumSalariesPerDept.keySet()) {
+            System.out.println(dep + " : " + sumSalariesPerDept.get(dep));
+        }
+    }
+
+    // Multi-level Grouping: Department and Age Range
+    static void multiLevelGroupingDepartmentAndAgeRange() {
+        Map<String, Map<String, List<Employee>>> multiLevelGroping = employees.stream().collect(Collectors.groupingBy(
+                Employee::getDepartment,
+                Collectors.groupingBy(emp -> {
+                    return emp.getAge() < 30 ? "Young" : emp.getAge() < 50 ? "Middle" : "Old";
+                })));
+
+        for (String dep : multiLevelGroping.keySet()) {
+            System.out.println("=================");
+            System.out.println(dep.toUpperCase());
+            Map<String, List<Employee>> secondLevel = multiLevelGroping.get(dep);
+            for (String ageName : secondLevel.keySet()) {
+                System.out.println("----");
+                System.out.println(ageName);
+                List<Employee> secondList = secondLevel.get(ageName);
+                secondList.forEach(
+                        e -> System.out.println(e.getFirstName() + ", " + e.getLastName() + ": " + e.getAge()));
+
+            }
+        }
+    }
+
+    // Group by Department and Collect Names into a Set
+    static void groupDepartmentAndCollectNamesSet() {
+        Map<String, Set<String>> collect = employees.stream().collect(
+                Collectors.groupingBy(Employee::getDepartment,
+                        Collectors.mapping(Employee::getFirstName, Collectors.toSet())));
+
+        for (String dep : collect.keySet()) {
+            System.out.println("--------");
+            System.out.println(dep);
+            collect.get(dep).forEach(System.out::println);
+        }
+    }
+
     static void partitionedBySalary() {
         Map<Boolean, List<Employee>> bySalary = employees.stream()
                 .collect(Collectors.partitioningBy(emp -> emp.getSalary() < 70000));
@@ -141,7 +187,18 @@ public class StreamDemo {
         }
     }
 
+    // Group by Department and Salary Statistics
+    static void groupDepartmentSalaryStatistics() {
+        Map<String, DoubleSummaryStatistics> collect = employees.stream().collect(
+                Collectors.groupingBy(Employee::getDepartment, Collectors.summarizingDouble(Employee::getSalary)));
+        for (String dep : collect.keySet()) {
+            System.out.println("==>" + dep);
+            DoubleSummaryStatistics doubleSummaryStatistics = collect.get(dep);
+            System.out.println(doubleSummaryStatistics.toString());
+        }
+    }
+
     public static void main(String[] args) {
-        groupByDepartment3rdParam();
+        groupDepartmentSalaryStatistics();
     }
 }

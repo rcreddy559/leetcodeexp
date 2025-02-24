@@ -35,6 +35,8 @@ public class Employee {
 
     private List<Address> addresses;
 
+    private int age;
+
     // Getters and Setters
     public String getEmployeeId() {
         return employeeId;
@@ -116,6 +118,13 @@ public class Employee {
         isActive = active;
     }
 
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getAge() {
+        return age;
+    }
     // toString method for easy printing of object details
     @Override
     public String toString() {

@@ -8,9 +8,14 @@ import java.util.Random;
 import java.util.random.RandomGenerator;
 
 public class CommonUtils {
+        // Private constructor to hide the implicit public one
+        private CommonUtils() {
+                throw new UnsupportedOperationException("Utility class");
+        }
+        private static final Random random = new Random(); // For generating random data
+
         public static List<Employee> getEmployees() {
                 List<Employee> employees = new ArrayList<>();
-                Random random = new Random(); // For generating random data
 
                 String[] firstNames = { "John", "Jane", "David", "Sarah", "Michael", /* ... add more names */ "Ashley",
                                 "Kevin", "Jessica", "William", "Elizabeth" };
@@ -44,7 +49,6 @@ public class CommonUtils {
                                         - (long) random.nextInt(365 * 5 * 24 * 60 * 60 * 10)); // Hired within the
                                                                                                // last 5 years
                         boolean isActive = random.nextBoolean();
-
                         List<Address> addresses = new ArrayList<>();
                         Address address = new Address();
                         address.setHouseNo(random.nextInt(1000) + 1); // House number between 1 and 1000
@@ -57,7 +61,7 @@ public class CommonUtils {
 
                         Employee employee = new Employee(employeeId, firstName, lastName, email, phoneNumber,
                                         departments[random.nextInt(5)], position, salary, hireDate, isActive,
-                                        addresses);
+                                        addresses, random.nextInt(60-20+1)+20);
                         employees.add(employee);
                 }
 
