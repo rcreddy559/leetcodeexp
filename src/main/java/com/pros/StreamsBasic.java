@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,10 +57,20 @@ public class StreamsBasic {
 
     /*
      * Reduce
+     * Summing Values
+     * Calculate the sum of a list of numbers.
      */
     static void reduceExample() {
-        Integer reduce = Stream.of(arrObj).reduce(0, (a, b) -> a + b);
-        System.out.println("Sum:" + reduce);
+        Integer sum = Stream.of(arrObj).reduce(0, (a, b) -> a + b);
+        System.out.println("Sum:" + sum);
+
+        IntSummaryStatistics summaryStatistics = Stream.of(arrObj)
+                .collect(Collectors.summarizingInt(Integer::intValue));
+        System.out.println("Sum:" + summaryStatistics.getSum());
+
+        sum = Stream.of(arrObj).reduce(0, Integer::sum);
+        System.out.println("Sum:" + sum);
+
     }
 
     /*
@@ -123,7 +134,18 @@ public class StreamsBasic {
         }
     }
 
+    /*
+     * Joining Strings
+     * Concatenate a list of strings with a delimiter.
+     */
+
+    static void joiningStrings() {
+        List<String> words = Arrays.asList("Hello", "World", "Java");
+        String joinWords = words.stream().collect(Collectors.joining(" "));
+        System.out.println(joinWords);
+    }
+
     public static void main(String[] args) {
-        getAllDuplicates();
+        joiningStrings();
     }
 }
