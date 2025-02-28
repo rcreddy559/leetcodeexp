@@ -1,6 +1,12 @@
 package com.collections.functional;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.IntStream;
+
+import com.utils.CommonUtils;
+import com.utils.Employee;
 
 public class FunctionDemo {
    /*
@@ -38,9 +44,23 @@ public class FunctionDemo {
       System.out.println("Compose: " + result);
    }
 
+   static void testtComposeStream() {
+      List<Integer> list = Arrays.asList(10,20,30,40,50,60,70,80,90);
+      List<Integer> composeList = list.stream().map(compose).toList();
+      System.out.println(composeList);
+   }
+
+   static Function<Employee, String> getFullName = emp->"Full Name: "+emp.getFirstName()+", "+emp.getLastName();
+
+   static void testGetFullName() {
+      List<String> fullNames = CommonUtils.getEmployees().stream().map(getFullName).toList();
+      fullNames.forEach(System.out::println);
+   }
    public static void main(String[] args) {
       testFunction("Hello, Java functional interaces");
       testAndThen(10);
       testCompose(10);
+      testtComposeStream();
+      testGetFullName();
    }
 }
