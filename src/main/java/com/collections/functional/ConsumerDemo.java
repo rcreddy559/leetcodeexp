@@ -7,6 +7,14 @@ import java.util.function.Consumer;
 import com.utils.CommonUtils;
 import com.utils.Employee;
 
+/***
+ * Key Points:
+        Syntax: Consumer<T> takes an input type T and returns no result (void).
+        Method: accept(T t) is the core method you implement.
+        Chaining: Use andThen to chain multiple consumers.
+        Use Cases: Perfect for operations that produce side effects (e.g., printing, logging, updating state).
+ */
+
 public class ConsumerDemo {
     
     static Consumer<String> printStr = str -> System.out.println(", "+str);
