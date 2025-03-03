@@ -8,13 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.springframework.boot.SpringApplication.Running;
 
 import com.utils.CommonUtils;
 import com.utils.Product;
@@ -367,7 +364,25 @@ public class CodingExamples {
         System.out.println(Arrays.toString(slidingArray));
     }
 
-    public static void main(String[] args) {
-        implementingSlidingWindow();
+    /*
+     * Given a String s = "aaaaa", 
+     * find the count of substring matching given pattern "aa". Output : 4
+     */
+    static void countSubstringMatching() {
+        String str = "aoiaauyaaa";
+        String pattern = "aa";
+        int matchingCount = 0;
+
+        for (int i = 0; i <= str.length() - pattern.length(); i++) {
+            if (str.substring(i, i + pattern.length()).equals(pattern)) {
+                matchingCount++;
+            }
+        }
+        System.out.println(matchingCount);
     }
+
+    public static void main(String[] args) {
+        countSubstringMatching();
+    }
+
 }
