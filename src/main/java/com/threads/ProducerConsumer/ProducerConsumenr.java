@@ -2,8 +2,6 @@ package com.threads.ProducerConsumer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Flow;
-import java.util.function.IntConsumer;
 
 class Processor {
 

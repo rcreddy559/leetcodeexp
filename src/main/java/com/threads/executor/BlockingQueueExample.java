@@ -6,7 +6,7 @@ import java.util.concurrent.BlockingQueue;
 class FirstWorker implements Runnable {
     BlockingQueue<Integer> queue;
 
-    FirstWorker(BlockingQueue queue) {
+    FirstWorker(BlockingQueue<Integer> queue) {
         this.queue = queue;
     }
 
@@ -32,7 +32,7 @@ class FirstWorker implements Runnable {
 class SecondWorker implements Runnable {
     BlockingQueue<Integer> queue;
 
-    SecondWorker(BlockingQueue queue) {
+    SecondWorker(BlockingQueue<Integer> queue) {
         this.queue = queue;
     }
 
