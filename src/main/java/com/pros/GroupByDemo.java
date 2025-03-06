@@ -18,6 +18,9 @@ public class GroupByDemo {
     static {
         employees = CommonUtils.getEmployees();
     }
+    /*
+     * Find the first Non-Repeated charector in string using Java streams
+     */
 
     static void findNonRepeatingChars() {
         String str = "/users/ravichandrap/Documents/leetcodeexp";

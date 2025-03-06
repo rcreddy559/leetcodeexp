@@ -116,22 +116,7 @@ public class StreamsBasic {
         System.out.println(names);
     }
 
-    static void getAllDuplicates() {
-        Set<String> uniqueNames = new HashSet<>();
-        List<String> list = Stream.of(froots).filter(n -> !uniqueNames.add(n)).toList();
-        for (String n : uniqueNames) {
-            System.out.printf("%s, ", n);
-        }
-        System.out.println();
-        for (String n : list) {
-            System.out.printf("%s, ", n);
-        }
-        System.out.println();
-        String[] distinct = Stream.of(froots).distinct().toArray(String[]::new);
-        for (String s : distinct) {
-            System.out.printf("%s, ", s);
-        }
-    }
+  
 
     /*
      * Joining Strings
