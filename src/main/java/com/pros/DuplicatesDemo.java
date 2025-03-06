@@ -11,23 +11,23 @@ import java.util.stream.Stream;
 public class DuplicatesDemo {
 
     public static void main(String[] args) {
-        coutnDuplicates();
+        List<Integer> dupNumbers = Arrays.asList(10, 20, 30, 40, 50, 60, 70, 80, 90, 30, 40, 60, 80, 10);
+        coutnDuplicates(dupNumbers);
     }
 
-    static void removeDuplicates() {
-        List<Integer> dupNumbers = Arrays.asList(10, 20, 30, 40, 50, 60, 70, 80, 90, 30, 40, 60, 80, 10);
+    static void removeDuplicates(List<Integer> dupNumbers) {
+
         List<Integer> noDup = dupNumbers.stream().distinct().toList();
         System.out.println(dupNumbers);
         System.out.println(noDup);
     }
 
-    static void coutnDuplicates() {
-        List<Integer> dupNumbers = Arrays.asList(10, 20, 30, 40, 50, 60, 70, 80, 90, 30, 40, 60, 80, 10);
+    static void coutnDuplicates(List<Integer> dupNumbers) {
         Map<Integer, Long> result = dupNumbers.stream().collect(Collectors.groupingBy(n -> n, Collectors.counting()));
         List<Integer> dup = result.entrySet().stream()
-                            .filter(v -> v.getValue() > 1)
-                            .map(entity->entity.getKey())                    
-                            .toList();
+                .filter(v -> v.getValue() > 1)
+                .map(entity -> entity.getKey())
+                .toList();
         System.out.println(dup);
 
     }
