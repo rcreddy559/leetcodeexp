@@ -1,4 +1,4 @@
-package com.designpattern.structuraldesignpattern;
+package com.dp.structuraldesignpattern;
 
 public class BridgePattern {
     public static void main(String[] args) {

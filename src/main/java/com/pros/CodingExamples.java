@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-
 import com.utils.CommonUtils;
 import com.utils.Product;
 
@@ -365,7 +364,7 @@ public class CodingExamples {
     }
 
     /*
-     * Given a String s = "aaaaa", 
+     * Given a String s = "aaaaa",
      * find the count of substring matching given pattern "aa". Output : 4
      */
     static void countSubstringMatching() {
@@ -382,7 +381,7 @@ public class CodingExamples {
     }
 
     public static void main(String[] args) {
-        countSubstringMatching();
+        groupByLengthAndConcatenate();
     }
 
 }

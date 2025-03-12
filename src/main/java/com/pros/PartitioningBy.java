@@ -48,8 +48,8 @@ public class PartitioningBy {
                 Arrays.asList("c", "d"),
                 Arrays.asList("e", "f"));
         List<String> collect = nestedList.stream()
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
         collect.forEach(System.out::println);
     }
 

@@ -1,4 +1,4 @@
-package com.designpattern.creational;
+package com.dp.creational;
 
 abstract class Vehicle {
     public abstract void printVehicle();

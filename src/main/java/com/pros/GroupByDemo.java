@@ -12,6 +12,17 @@ import java.util.stream.Collectors;
 import com.utils.CommonUtils;
 import com.utils.Employee;
 
+/**
+ * This class demonstrates various examples of using Java streams to perform
+ * grouping operations on a list of employees.
+ * The code includes methods to find the first non-repeated character in a
+ * string, group employees by department,
+ * group employees by department with a specified third parameter, calculate the
+ * sum of salaries per department,
+ * perform multi-level grouping by department and age range, group employees by
+ * department and collect names into a set,
+ * and group employees by department and calculate salary statistics.
+ */
 public class GroupByDemo {
     static List<Employee> employees;
 
@@ -120,6 +131,6 @@ public class GroupByDemo {
     }
 
     public static void main(String[] args) {
-        
+        findNonRepeatingChars();
     }
 }

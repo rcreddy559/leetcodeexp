@@ -1,4 +1,4 @@
-package com.designpattern.structuraldesignpattern;
+package com.dp.structuraldesignpattern;
 
 // Target Interface
 interface MediaPlayer {
