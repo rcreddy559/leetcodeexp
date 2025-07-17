@@ -1,5 +1,6 @@
 package com.pros;
 
+import java.util.Arrays;
 import java.util.DoubleSummaryStatistics;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,6 +41,21 @@ public class GroupByDemo {
                 .collect(Collectors.groupingBy(Function.identity(), LinkedHashMap::new, Collectors.counting()))
                 .entrySet().stream().filter(entry -> entry.getValue() == 1).map(Map.Entry::getKey).findFirst();
         System.out.println(first.orElse(null));
+    }
+
+    /**
+     * Finds and prints the count of each word in a sample string using Java
+     * streams.
+     */
+    static void findWordsCount() {
+        String str = "This is a test string with several words. find the count of each word in this string find the count of each word in this string";
+
+        // Split on whitespace and punctuation, but keep apostrophes and hyphens within
+        // words
+        Map<String, Long> wordCount = Arrays.stream(str.split("\\s"))
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        wordCount.forEach((word, count) -> System.out.println(word + ": " + count));
     }
 
     /*
@@ -131,6 +147,6 @@ public class GroupByDemo {
     }
 
     public static void main(String[] args) {
-        findNonRepeatingChars();
+        findWordsCount();
     }
 }

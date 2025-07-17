@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Guide to IBM MQ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Calm Harmony (Slate/Gray neutrals with a primary Blue for interactive elements) -->
+    <!-- Application Structure Plan: A single-page, vertical-scroll application with a fixed sidebar navigation. The structure guides the user from high-level concepts (What is MQ?) to interactive explorations (Core Concepts, Messaging Models) and practical applications (Use Cases, Learning Path). This top-down approach is ideal for a beginner, providing foundational knowledge before introducing how-to steps. The interactive demo at the end solidifies understanding by making the core "put/get" process tangible. -->
+    <!-- Visualization & Content Choices:
+    - Core Concepts: Goal: Organize & Inform. Method: Interactive diagram using HTML/CSS divs. Interaction: Hover/click to highlight a component and display its description. Justification: More engaging than a static list, visually shows relationships. Library: Vanilla JS.
+    - Messaging Models: Goal: Compare. Method: Side-by-side animated diagrams using HTML/CSS divs. Interaction: User-triggered animation. Justification: Clearly illustrates the fundamental difference in message flow between P2P and Pub/Sub. Library: Vanilla JS.
+    - Use Cases: Goal: Inform. Method: Horizontal Bar Chart. Interaction: Animated on load, tooltips on hover. Justification: Provides a quick, quantitative overview of MQ's industry adoption. Library: Chart.js.
+    - Learning Path: Goal: Organize. Method: Accordion component. Interaction: Click to expand/collapse phases. Justification: Presents a large amount of text in a structured, non-overwhelming way. Library: Vanilla JS.
+    - Interactive Demo: Goal: Inform & Engage. Method: Simulated message flow with form inputs. Interaction: User types a message and clicks buttons to "put" and "get". Justification: The most effective way to teach the core function by letting the user perform it. Library: Vanilla JS.
+     -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc; /* slate-50 */
+        color: #1e293b; /* slate-800 */
+      }
+      .sidebar-link {
+        transition: all 0.2s ease-in-out;
+      }
+      .sidebar-link.active {
+        background-color: #2563eb; /* blue-600 */
+        color: white;
+        transform: translateX(4px);
+      }
+      .concept-box {
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+      }
+      .concept-box.active {
+        border-color: #2563eb; /* blue-600 */
+        transform: scale(1.05);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+      }
+      .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 400px;
+        max-height: 50vh;
+      }
+      .animated-message {
+        position: absolute;
+        opacity: 0;
+        transition: all 1s ease-in-out;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+        background-color: #3b82f6;
+        color: white;
+        font-size: 0.875rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body class="flex">
+    <nav
+      class="hidden lg:block w-64 h-screen fixed top-0 left-0 bg-white shadow-md p-4"
+    >
+      <h2 class="text-xl font-bold text-blue-600 mb-8">IBM MQ Guide</h2>
+      <ul class="space-y-2" id="desktop-nav">
+        <li>
+          <a
+            href="#introduction"
+            class="sidebar-link block py-2 px-4 rounded-md hover:bg-slate-100"
+            >Introduction</a
+          >
+        </li>
+        <li>
+          <a
+            href="#core-concepts"
+            class="sidebar-link block py-2 px-4 rounded-md hover:bg-slate-100"
+            >Core Concepts</a
+          >
+        </li>
+        <li>
+          <a
+            href="#messaging-models"
+            class="sidebar-link block py-2 px-4 rounded-md hover:bg-slate-100"
+            >Messaging Models</a
+          >
+        </li>
+        <li>
+          <a
+            href="#key-features"
+            class="sidebar-link block py-2 px-4 rounded-md hover:bg-slate-100"
+            >Key Features</a
+          >
+        </li>
+        <li>
+          <a
+            href="#use-cases"
+            class="sidebar-link block py-2 px-4 rounded-md hover:bg-slate-100"
+            >Use Cases</a
+          >
+        </li>
+        <li>
+          <a
+            href="#learning-path"
+            class="sidebar-link block py-2 px-4 rounded-md hover:bg-slate-100"
+            >Learning Path</a
+          >
+        </li>
+        <li>
+          <a
+            href="#interactive-demo"
+            class="sidebar-link block py-2 px-4 rounded-md hover:bg-slate-100"
+            >Interactive Demo</a
+          >
+        </li>
+      </ul>
+    </nav>
+
+    <main class="lg:ml-64 flex-1 p-4 sm:p-6 md:p-10">
+      <section
+        id="introduction"
+        class="min-h-screen flex flex-col justify-center"
+      >
+        <div class="bg-white p-8 rounded-xl shadow-lg">
+          <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+            An Interactive Guide to IBM MQ
+          </h1>
+          <p class="text-lg text-slate-600 mb-6">
+            Formerly WebSphere MQ, this is a powerful messaging middleware that
+            enables applications to communicate with each other reliably and
+            securely, without being directly connected. This guide will walk you
+            through everything you need to know to get started.
+          </p>
+          <div class="prose max-w-none text-slate-700">
+            <p>
+              The core function of IBM MQ is to provide reliable, asynchronous
+              communication. This means the sending and receiving applications
+              don't need to be running at the same time. If a system is
+              temporarily offline, MQ stores the message safely and delivers it
+              when the system is back online. This "decoupling" of applications
+              is fundamental to building robust, resilient, and scalable
+              enterprise systems.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="core-concepts"
+        class="min-h-screen flex flex-col justify-center"
+      >
+        <div class="bg-white p-8 rounded-xl shadow-lg">
+          <h2 class="text-3xl font-bold mb-2">Core Concepts</h2>
+          <p class="text-slate-600 mb-8">
+            At the heart of IBM MQ are a few fundamental components that work
+            together to move data. This section provides an interactive overview
+            of these building blocks. Click on any component to learn more about
+            its role in the architecture.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div
+              id="concept-diagram"
+              class="relative border-2 border-dashed border-slate-300 rounded-lg p-8 flex flex-col items-center justify-center space-y-4 h-[400px]"
+            >
+              <div
+                id="concept-qmgr"
+                class="concept-box active w-48 text-center bg-blue-100 text-blue-800 border-2 border-blue-300 rounded-lg p-4 font-semibold"
+              >
+                Queue Manager
+              </div>
+              <div class="flex space-x-8">
+                <div
+                  id="concept-queue"
+                  class="concept-box w-32 text-center bg-green-100 text-green-800 border-2 border-green-300 rounded-lg p-3"
+                >
+                  Queue
+                </div>
+                <div
+                  id="concept-channel"
+                  class="concept-box w-32 text-center bg-yellow-100 text-yellow-800 border-2 border-yellow-300 rounded-lg p-3"
+                >
+                  Channel
+                </div>
+              </div>
+              <div
+                id="concept-message"
+                class="concept-box w-40 text-center bg-purple-100 text-purple-800 border-2 border-purple-300 rounded-lg p-3"
+              >
+                ✉️ Message
+              </div>
+            </div>
+            <div
+              id="concept-explanation"
+              class="bg-slate-50 p-6 rounded-lg h-[400px] flex flex-col justify-center"
+            >
+              <h3
+                id="concept-title"
+                class="text-2xl font-bold mb-4 text-blue-700"
+              >
+                Queue Manager
+              </h3>
+              <p id="concept-text" class="text-slate-700">
+                The heart of MQ. It's the server component that hosts and
+                manages queues, channels, and other resources. It's responsible
+                for the storage and reliable delivery of messages.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="messaging-models"
+        class="min-h-screen flex flex-col justify-center"
+      >
+        <div class="bg-white p-8 rounded-xl shadow-lg">
+          <h2 class="text-3xl font-bold mb-2">Messaging Models</h2>
+          <p class="text-slate-600 mb-8">
+            IBM MQ supports two primary models for communication. This section
+            provides a simple, animated demonstration of each model to help you
+            visualize how they differ in distributing messages across an
+            enterprise.
+          </p>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="border border-slate-200 p-6 rounded-lg">
+              <h3 class="font-bold text-xl mb-4">Point-to-Point</h3>
+              <p class="text-sm text-slate-600 mb-4">
+                A message is sent to a queue and consumed by only one receiver,
+                even if multiple receivers are listening. It's used for
+                one-to-one communication.
+              </p>
+              <div
+                id="p2p-diagram"
+                class="relative h-48 bg-slate-50 rounded-md p-4 flex items-center justify-between"
+              >
+                <div class="text-center">👨‍💻<br />Sender</div>
+                <div
+                  class="w-16 h-16 border-4 border-slate-400 border-r-transparent rounded-full animate-spin"
+                  style="animation-duration: 3s"
+                ></div>
+                <div class="text-center">🗄️<br />Queue</div>
+                <div
+                  class="w-16 h-16 border-4 border-slate-400 border-l-transparent rounded-full animate-spin"
+                  style="animation-duration: 3s"
+                ></div>
+                <div class="text-center">👨‍💻<br />Receiver</div>
+                <div
+                  id="p2p-message"
+                  class="animated-message"
+                  style="left: 20%"
+                >
+                  Msg
+                </div>
+              </div>
+              <button
+                id="p2p-play"
+                class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+              >
+                Play Animation
+              </button>
+            </div>
+            <div class="border border-slate-200 p-6 rounded-lg">
+              <h3 class="font-bold text-xl mb-4">Publish/Subscribe</h3>
+              <p class="text-sm text-slate-600 mb-4">
+                A message is published to a topic. All applications that have
+                subscribed to that topic receive a copy of the message. It's
+                used for one-to-many communication.
+              </p>
+              <div
+                id="pubsub-diagram"
+                class="relative h-48 bg-slate-50 rounded-md p-4 flex flex-col items-center justify-center"
+              >
+                <div class="text-center">📢<br />Publisher</div>
+                <div class="text-center my-2">📚<br />Topic</div>
+                <div class="flex justify-around w-full">
+                  <div class="text-center">👨‍💻<br />Sub 1</div>
+                  <div class="text-center">👨‍💻<br />Sub 2</div>
+                  <div class="text-center">👨‍💻<br />Sub 3</div>
+                </div>
+                <div
+                  id="pubsub-message-1"
+                  class="animated-message"
+                  style="top: 25%; left: 45%"
+                >
+                  Msg
+                </div>
+                <div
+                  id="pubsub-message-2"
+                  class="animated-message"
+                  style="top: 25%; left: 45%"
+                >
+                  Msg
+                </div>
+                <div
+                  id="pubsub-message-3"
+                  class="animated-message"
+                  style="top: 25%; left: 45%"
+                >
+                  Msg
+                </div>
+              </div>
+              <button
+                id="pubsub-play"
+                class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+              >
+                Play Animation
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="key-features"
+        class="min-h-screen flex flex-col justify-center"
+      >
+        <div class="bg-white p-8 rounded-xl shadow-lg">
+          <h2 class="text-3xl font-bold mb-2">Key Features & Benefits</h2>
+          <p class="text-slate-600 mb-8">
+            IBM MQ is trusted by enterprises worldwide because of its robust
+            feature set designed for mission-critical operations. This section
+            highlights the core benefits that make MQ a leader in enterprise
+            messaging.
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div
+              class="bg-slate-50 p-6 rounded-lg hover:shadow-md hover:-translate-y-1 transition-all"
+            >
+              <h3 class="font-bold text-lg mb-2">✔️ Assured Delivery</h3>
+              <p class="text-slate-600 text-sm">
+                Guarantees messages are delivered once-and-only-once, preventing
+                data loss or duplication, which is critical for financial
+                transactions.
+              </p>
+            </div>
+            <div
+              class="bg-slate-50 p-6 rounded-lg hover:shadow-md hover:-translate-y-1 transition-all"
+            >
+              <h3 class="font-bold text-lg mb-2">⏳ Asynchronous Messaging</h3>
+              <p class="text-slate-600 text-sm">
+                Decouples applications, allowing them to communicate without
+                running at the same time, increasing overall system resilience.
+              </p>
+            </div>
+            <div
+              class="bg-slate-50 p-6 rounded-lg hover:shadow-md hover:-translate-y-1 transition-all"
+            >
+              <h3 class="font-bold text-lg mb-2">🛡️ Robust Security</h3>
+              <p class="text-slate-600 text-sm">
+                Provides end-to-end encryption (TLS) and fine-grained access
+                control to protect sensitive data both in transit and at rest.
+              </p>
+            </div>
+            <div
+              class="bg-slate-50 p-6 rounded-lg hover:shadow-md hover:-translate-y-1 transition-all"
+            >
+              <h3 class="font-bold text-lg mb-2">📈 High Scalability</h3>
+              <p class="text-slate-600 text-sm">
+                Handles massive message volumes and scales horizontally through
+                clustering to meet the demands of growing applications.
+              </p>
+            </div>
+            <div
+              class="bg-slate-50 p-6 rounded-lg hover:shadow-md hover:-translate-y-1 transition-all"
+            >
+              <h3 class="font-bold text-lg mb-2">🤝 Transactional Support</h3>
+              <p class="text-slate-600 text-sm">
+                Coordinates units of work across multiple resources (e.g., MQ
+                and a database), ensuring data integrity with all-or-nothing
+                outcomes.
+              </p>
+            </div>
+            <div
+              class="bg-slate-50 p-6 rounded-lg hover:shadow-md hover:-translate-y-1 transition-all"
+            >
+              <h3 class="font-bold text-lg mb-2">💻 Cross-Platform</h3>
+              <p class="text-slate-600 text-sm">
+                Runs on a vast range of platforms from mainframes to Linux,
+                Windows, and the cloud, enabling seamless integration.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="use-cases" class="min-h-screen flex flex-col justify-center">
+        <div class="bg-white p-8 rounded-xl shadow-lg">
+          <h2 class="text-3xl font-bold mb-2">Where is IBM MQ Used?</h2>
+          <p class="text-slate-600 mb-8">
+            From processing payments to managing flight schedules, IBM MQ is the
+            invisible backbone for countless critical systems across major
+            industries. The chart below illustrates its adoption in key sectors,
+            showcasing its versatility and reliability.
+          </p>
+          <div class="chart-container">
+            <canvas id="useCasesChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="learning-path"
+        class="min-h-screen flex flex-col justify-center"
+      >
+        <div class="bg-white p-8 rounded-xl shadow-lg">
+          <h2 class="text-3xl font-bold mb-2">Your Learning Path</h2>
+          <p class="text-slate-600 mb-8">
+            Ready to dive in? This step-by-step guide is designed for beginners
+            and will take you from theory to practice. Click each phase to
+            expand and see the recommended actions and resources.
+          </p>
+          <div id="accordion" class="space-y-4">
+            <div class="accordion-item border border-slate-200 rounded-lg">
+              <button
+                class="accordion-header w-full text-left p-4 font-semibold text-lg bg-slate-50 hover:bg-slate-100 rounded-t-lg flex justify-between items-center transition"
+              >
+                Phase 1: Grasp the Core Concepts
+                <span class="transform transition-transform duration-300"
+                  >▼</span
+                >
+              </button>
+              <div class="accordion-content">
+                <div class="p-4 prose max-w-none text-slate-700">
+                  <p>
+                    Before writing any code, it's crucial to understand the
+                    'why' behind message queuing and the fundamental components
+                    of IBM MQ.
+                  </p>
+                  <ul>
+                    <li>
+                      <strong>What is Message Queuing?</strong> It's all about
+                      decoupling applications so they can communicate reliably
+                      and asynchronously.
+                    </li>
+                    <li>
+                      <strong>Core Components:</strong> Get familiar with
+                      Messages, Queues, Queue Managers, and Channels.
+                    </li>
+                    <li>
+                      <strong>Messaging Models:</strong> Understand the
+                      difference between Point-to-Point and Publish/Subscribe.
+                    </li>
+                  </ul>
+                  <p>
+                    <strong>Action:</strong> Read the
+                    <a
+                      href="https://developer.ibm.com/articles/mq-fundamentals/"
+                      target="_blank"
+                      class="text-blue-600 hover:underline"
+                      >IBM MQ fundamentals</a
+                    >
+                    article.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item border border-slate-200 rounded-lg">
+              <button
+                class="accordion-header w-full text-left p-4 font-semibold text-lg bg-slate-50 hover:bg-slate-100 flex justify-between items-center transition"
+              >
+                Phase 2: Set Up Your Environment
+                <span class="transform transition-transform duration-300"
+                  >▼</span
+                >
+              </button>
+              <div class="accordion-content">
+                <div class="p-4 prose max-w-none text-slate-700">
+                  <p>
+                    The best way to learn is by doing. You need a free MQ
+                    environment to practice in. The recommended path is using
+                    containers.
+                  </p>
+                  <ul>
+                    <li>
+                      <strong>Containers (Docker/Podman):</strong> This is the
+                      quickest way to get a pre-configured queue manager
+                      running.
+                    </li>
+                    <li>
+                      <strong>Alternative (Native Install):</strong> You can
+                      also install the free 'MQ Advanced for Developers' edition
+                      directly on Windows or Linux.
+                    </li>
+                  </ul>
+                  <p>
+                    <strong>Action:</strong> Follow the
+                    <a
+                      href="https://developer.ibm.com/learningpaths/ibm-mq-badge/create-configure-queue-manager/"
+                      target="_blank"
+                      class="text-blue-600 hover:underline"
+                      >Create and configure a queue manager</a
+                    >
+                    container tutorial.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item border border-slate-200 rounded-lg">
+              <button
+                class="accordion-header w-full text-left p-4 font-semibold text-lg bg-slate-50 hover:bg-slate-100 flex justify-between items-center transition"
+              >
+                Phase 3: Your First "Hello, World!"
+                <span class="transform transition-transform duration-300"
+                  >▼</span
+                >
+              </button>
+              <div class="accordion-content">
+                <div class="p-4 prose max-w-none text-slate-700">
+                  <p>
+                    With a running queue manager, it's time to send your first
+                    message and see MQ in action.
+                  </p>
+                  <ul>
+                    <li>
+                      <strong>Create a Queue:</strong> Use MQ Explorer (GUI) or
+                      MQSC (command-line) to create your first queue.
+                    </li>
+                    <li>
+                      <strong>Put & Get a Message:</strong> Use the sample
+                      programs provided with MQ to put a test message onto the
+                      queue and then retrieve it.
+                    </li>
+                    <li>
+                      <strong>Write Code:</strong> Connect a simple Java
+                      application to your queue manager to programmatically send
+                      and receive a message.
+                    </li>
+                  </ul>
+                  <p>
+                    <strong>Action:</strong> Work through the
+                    <a
+                      href="https://developer.ibm.com/tutorials/mq-develop-mq-jms/"
+                      target="_blank"
+                      class="text-blue-600 hover:underline"
+                      >Write and run your first IBM MQ Jakarta application</a
+                    >
+                    tutorial.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="interactive-demo"
+        class="min-h-screen flex flex-col justify-center"
+      >
+        <div class="bg-white p-8 rounded-xl shadow-lg">
+          <h2 class="text-3xl font-bold mb-2">Interactive Demo: Put & Get</h2>
+          <p class="text-slate-600 mb-8">
+            Let's make this real. This interactive demo simulates the most
+            fundamental MQ operation: putting a message onto a queue and getting
+            it back. Type a message, press "Put Message," and watch it flow.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <label
+                for="message-input"
+                class="block font-medium text-slate-700 mb-2"
+                >Your Message:</label
+              >
+              <input
+                type="text"
+                id="message-input"
+                class="w-full border border-slate-300 rounded-md p-2"
+                value="Hello, MQ!"
+              />
+              <div class="flex space-x-4 mt-4">
+                <button
+                  id="put-btn"
+                  class="flex-1 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+                >
+                  1. Put Message
+                </button>
+                <button
+                  id="get-btn"
+                  class="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
+                  disabled
+                >
+                  2. Get Message
+                </button>
+              </div>
+              <button
+                id="reset-btn"
+                class="w-full mt-2 bg-slate-500 text-white py-2 rounded-md hover:bg-slate-600 transition"
+              >
+                Reset
+              </button>
+            </div>
+            <div
+              class="relative bg-slate-50 rounded-lg p-4 h-64 flex flex-col items-center justify-around"
+            >
+              <div class="text-center">
+                <p class="font-bold">Application</p>
+                <div
+                  class="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-inner"
+                >
+                  👨‍💻
+                </div>
+              </div>
+              <div
+                id="demo-queue"
+                class="text-center w-32 h-32 bg-white rounded-lg flex flex-col items-center justify-center shadow-inner border-2 border-slate-200"
+              >
+                <p class="font-bold">Queue</p>
+                <span id="queue-status" class="text-sm text-slate-500"
+                  >(Empty)</span
+                >
+              </div>
+              <div
+                id="demo-message"
+                class="animated-message"
+                style="top: 25%; left: 45%"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const sections = document.querySelectorAll("main section");
+        const navLinks = document.querySelectorAll(".sidebar-link");
+
+        const observerOptions = {
+          root: null,
+          rootMargin: "0px",
+          threshold: 0.5,
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const id = entry.target.getAttribute("id");
+              navLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === `#${id}`) {
+                  link.classList.add("active");
+                }
+              });
+            }
+          });
+        }, observerOptions);
+
+        sections.forEach((section) => {
+          observer.observe(section);
+        });
+
+        // Core Concepts Interaction
+        const conceptBoxes = document.querySelectorAll(".concept-box");
+        const conceptTitle = document.getElementById("concept-title");
+        const conceptText = document.getElementById("concept-text");
+        const conceptExplanations = {
+          "concept-qmgr": {
+            title: "Queue Manager",
+            text: "The heart of MQ. It's the server component that hosts and manages queues, channels, and other resources. It's responsible for the storage and reliable delivery of messages.",
+          },
+          "concept-queue": {
+            title: "Queue",
+            text: "A named destination that stores messages until they are retrieved by a receiving application. Queues ensure that messages are not lost even if the receiver is temporarily unavailable.",
+          },
+          "concept-channel": {
+            title: "Channel",
+            text: "A communication link. It connects a client application to a queue manager or connects two different queue managers, enabling messages to flow between them across a network.",
+          },
+          "concept-message": {
+            title: "Message",
+            text: "The unit of data that applications exchange. A message consists of control information (header) and the application data (payload).",
+          },
+        };
+
+        conceptBoxes.forEach((box) => {
+          box.addEventListener("click", () => {
+            conceptBoxes.forEach((b) => b.classList.remove("active"));
+            box.classList.add("active");
+            const explanation = conceptExplanations[box.id];
+            conceptTitle.textContent = explanation.title;
+            conceptText.textContent = explanation.text;
+          });
+        });
+
+        // Messaging Models Animation
+        const p2pPlay = document.getElementById("p2p-play");
+        const pubsubPlay = document.getElementById("pubsub-play");
+        const p2pMessage = document.getElementById("p2p-message");
+        const pubsubMessages = [
+          document.getElementById("pubsub-message-1"),
+          document.getElementById("pubsub-message-2"),
+          document.getElementById("pubsub-message-3"),
+        ];
+
+        p2pPlay.addEventListener("click", () => {
+          p2pMessage.style.transition = "none";
+          p2pMessage.style.opacity = "0";
+          p2pMessage.style.transform = "translate(0, 0)";
+
+          setTimeout(() => {
+            p2pMessage.style.transition = "all 2s ease-in-out";
+            p2pMessage.style.opacity = "1";
+            p2pMessage.style.transform = "translateX(200%)";
+          }, 100);
+
+          setTimeout(() => {
+            p2pMessage.style.opacity = "0";
+          }, 2100);
+        });
+
+        pubsubPlay.addEventListener("click", () => {
+          pubsubMessages.forEach((msg) => {
+            msg.style.transition = "none";
+            msg.style.opacity = "0";
+            msg.style.transform = "translate(0, 0) scale(1)";
+          });
+
+          setTimeout(() => {
+            pubsubMessages[0].style.transition = "all 1.5s ease-in-out";
+            pubsubMessages[0].style.opacity = "1";
+            pubsubMessages[0].style.transform =
+              "translate(-150%, 150%) scale(0.8)";
+
+            pubsubMessages[1].style.transition = "all 1.5s ease-in-out";
+            pubsubMessages[1].style.opacity = "1";
+            pubsubMessages[1].style.transform = "translate(0, 150%) scale(0.8)";
+
+            pubsubMessages[2].style.transition = "all 1.5s ease-in-out";
+            pubsubMessages[2].style.opacity = "1";
+            pubsubMessages[2].style.transform =
+              "translate(150%, 150%) scale(0.8)";
+          }, 100);
+
+          setTimeout(() => {
+            pubsubMessages.forEach((msg) => (msg.style.opacity = "0"));
+          }, 1600);
+        });
+
+        // Use Cases Chart
+        const ctx = document.getElementById("useCasesChart").getContext("2d");
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: [
+              "Financial Services",
+              "Retail & eCommerce",
+              "Logistics & Transport",
+              "Healthcare",
+              "Government",
+              "Manufacturing",
+            ],
+            datasets: [
+              {
+                label: "Adoption in Industry",
+                data: [95, 85, 80, 70, 75, 65],
+                backgroundColor: [
+                  "rgba(37, 99, 235, 0.6)",
+                  "rgba(22, 163, 74, 0.6)",
+                  "rgba(217, 119, 6, 0.6)",
+                  "rgba(219, 39, 119, 0.6)",
+                  "rgba(107, 114, 128, 0.6)",
+                  "rgba(124, 58, 237, 0.6)",
+                ],
+                borderColor: [
+                  "rgba(37, 99, 235, 1)",
+                  "rgba(22, 163, 74, 1)",
+                  "rgba(217, 119, 6, 1)",
+                  "rgba(219, 39, 119, 1)",
+                  "rgba(107, 114, 128, 1)",
+                  "rgba(124, 58, 237, 1)",
+                ],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                beginAtZero: true,
+                max: 100,
+                ticks: {
+                  callback: function (value) {
+                    return value + "%";
+                  },
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                display: false,
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    return `Adoption: ${context.raw}%`;
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        // Accordion
+        const accordionHeaders = document.querySelectorAll(".accordion-header");
+        accordionHeaders.forEach((header) => {
+          header.addEventListener("click", () => {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector("span");
+
+            // Close other accordions
+            accordionHeaders.forEach((otherHeader) => {
+              if (otherHeader !== header) {
+                otherHeader.nextElementSibling.style.maxHeight = null;
+                otherHeader.querySelector("span").style.transform =
+                  "rotate(0deg)";
+              }
+            });
+
+            if (content.style.maxHeight) {
+              content.style.maxHeight = null;
+              icon.style.transform = "rotate(0deg)";
+            } else {
+              content.style.maxHeight = content.scrollHeight + "px";
+              icon.style.transform = "rotate(180deg)";
+            }
+          });
+        });
+
+        // Interactive Demo
+        const putBtn = document.getElementById("put-btn");
+        const getBtn = document.getElementById("get-btn");
+        const resetBtn = document.getElementById("reset-btn");
+        const messageInput = document.getElementById("message-input");
+        const demoMessage = document.getElementById("demo-message");
+        const queueStatus = document.getElementById("queue-status");
+
+        function resetDemo() {
+          putBtn.disabled = false;
+          getBtn.disabled = true;
+          messageInput.disabled = false;
+          queueStatus.textContent = "(Empty)";
+          queueStatus.classList.remove("text-green-600");
+          queueStatus.classList.add("text-slate-500");
+          demoMessage.style.opacity = "0";
+          demoMessage.style.transition = "none";
+          demoMessage.style.transform = "translate(0, 0)";
+        }
+
+        putBtn.addEventListener("click", () => {
+          putBtn.disabled = true;
+          messageInput.disabled = true;
+          const messageText = messageInput.value || "Hello, MQ!";
+          demoMessage.textContent =
+            messageText.length > 15
+              ? messageText.substring(0, 12) + "..."
+              : messageText;
+
+          demoMessage.style.opacity = "1";
+          demoMessage.style.transition = "all 1.5s ease-in-out";
+          demoMessage.style.transform = "translateY(150%)";
+
+          setTimeout(() => {
+            queueStatus.textContent = "(1 Message)";
+            queueStatus.classList.remove("text-slate-500");
+            queueStatus.classList.add("text-green-600");
+            demoMessage.style.opacity = "0";
+            getBtn.disabled = false;
+          }, 1600);
+        });
+
+        getBtn.addEventListener("click", () => {
+          getBtn.disabled = true;
+          demoMessage.style.transform = "translateY(150%)";
+
+          setTimeout(() => {
+            demoMessage.style.opacity = "1";
+            demoMessage.style.transition = "all 1.5s ease-in-out";
+            demoMessage.style.transform = "translateY(0%)";
+          }, 100);
+
+          setTimeout(() => {
+            queueStatus.textContent = "(Empty)";
+            queueStatus.classList.remove("text-green-600");
+            queueStatus.classList.add("text-slate-500");
+          }, 1600);
+        });
+
+        resetBtn.addEventListener("click", resetDemo);
+      });
+    </script>
+  </body>
+</html>

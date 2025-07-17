@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Substring Visualizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: A single-page, top-to-bottom guide. Starts with a high-level intro, then dives into an interactive visualization where users can input a string and control the step-by-step animation of the sliding window algorithm. This visualization is the core, showing pointers, the current substring, and the state of all variables in real-time. This hands-on approach is better for learning than a static report. It's followed by an interactive code breakdown and a summary of complexity. The flow is designed to build understanding from concept to implementation to analysis. -->
+    <!-- Visualization & Content Choices: Report Info: Step-by-step dry run of "abcabcbb". Goal: Teach the algorithm's dynamic nature. Viz/Method: Interactive HTML/CSS animation instead of a static table. Divs will represent characters, pointers, and the charIndex array. JS will control the animation. Interaction: User can input string, play, pause, and step through the algorithm. Justification: Active participation and seeing the algorithm in motion is more effective for learning than passive reading. The `charIndex` array is visualized as a dynamic table, which is more intuitive than just text. Library/Method: Vanilla JS for animation logic and DOM manipulation. TailwindCSS for styling. CONFIRMATION: NO SVG, NO Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .char-box {
+            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .pointer {
+            transition: transform 0.5s ease-in-out;
+        }
+        .code-line {
+            transition: background-color 0.3s ease;
+        }
+        .explanation-box {
+            transition: opacity 0.5s ease-in-out;
+        }
+        .stat-value {
+             min-width: 3rem;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-7xl">
+        
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-5xl font-bold text-teal-700 mb-2">Longest Substring Visualizer</h1>
+            <p class="text-lg text-stone-600">An interactive guide to the Sliding Window algorithm.</p>
+        </header>
+
+        <main>
+            <section id="visualizer" class="bg-white p-6 rounded-2xl shadow-lg border border-stone-200 mb-8">
+                <div class="mb-6">
+                     <p class="text-stone-700 leading-relaxed mb-4">
+                        The "Longest Substring Without Repeating Characters" is a classic computer science problem. The goal is to find the length of the longest continuous sequence of characters in a string where every character is unique. This interactive tool demonstrates the highly efficient **Sliding Window** technique to solve this. You can enter your own string below and use the controls to see how the algorithm works step-by-step.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 items-center">
+                        <input type="text" id="string-input" class="flex-grow w-full px-4 py-2 text-lg bg-stone-100 border-2 border-stone-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none" value="abcabcbb">
+                        <div class="flex gap-2 w-full sm:w-auto">
+                            <button id="start-btn" class="w-full sm:w-auto bg-teal-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-teal-700 transition-colors">Visualize</button>
+                             <button id="reset-btn" class="w-full sm:w-auto bg-stone-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-stone-600 transition-colors">Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="animation-area" class="min-h-[250px] flex flex-col justify-center">
+                    <div id="string-container" class="flex justify-center items-end relative h-24 mb-4"></div>
+                    <div id="visualization-container" class="relative w-full h-16"></div>
+                </div>
+
+                <div class="flex justify-center gap-2 mb-8 mt-4">
+                    <button id="play-pause-btn" class="bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400" disabled>Play</button>
+                    <button id="step-btn" class="bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400" disabled>Step</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div id="state-panel" class="bg-stone-100 p-4 rounded-lg border border-stone-200">
+                        <h3 class="font-bold text-lg mb-4 text-stone-700">Algorithm State</h3>
+                        <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-md">
+                            <div class="font-semibold">Current Character:</div> <div id="current-char" class="font-mono text-teal-600 font-bold stat-value">-</div>
+                            <div class="font-semibold">`start` index:</div> <div id="start-index" class="font-mono text-red-600 font-bold stat-value">-</div>
+                            <div class="font-semibold">`end` index:</div> <div id="end-index" class="font-mono text-blue-600 font-bold stat-value">-</div>
+                            <div class="font-semibold">`maxLength`:</div> <div id="max-length" class="font-mono text-green-600 font-bold stat-value">-</div>
+                            <div class="font-semibold">Current Length:</div> <div id="current-length" class="font-mono stat-value">-</div>
+                        </div>
+                    </div>
+                    <div id="explanation-box" class="bg-stone-100 p-4 rounded-lg border border-stone-200 min-h-[100px] flex items-center">
+                        <p id="explanation-text" class="text-stone-700 leading-relaxed text-center">Enter a string and click 'Visualize' to begin.</p>
+                    </div>
+                </div>
+                 <div id="char-index-panel" class="mt-6 bg-stone-100 p-4 rounded-lg border border-stone-200">
+                    <h3 class="font-bold text-lg mb-3 text-stone-700">`charIndex` Lookup Table</h3>
+                    <p class="text-sm text-stone-600 mb-3">This table stores the *next* position to start from if we see a character again. It maps each character to `last seen index + 1`.</p>
+                    <div id="char-index-map" class="font-mono flex flex-wrap gap-x-4 gap-y-2">
+                        <span class="text-stone-500">Empty</span>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="code-explanation" class="bg-white p-6 rounded-2xl shadow-lg border border-stone-200">
+                <h2 class="text-2xl md:text-3xl font-bold text-teal-700 mb-4">Code Breakdown</h2>
+                <p class="text-stone-700 leading-relaxed mb-6">
+                    The algorithm is implemented in just a few lines of code. Hover over each line to see a detailed explanation of its role in the process. The code below is a JavaScript equivalent of the logic used in the visualization.
+                </p>
+                <div class="bg-gray-800 text-white p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                    <pre><code id="code-block">
+<span class="code-line" data-explanation="Function definition. It takes a string 's' and returns an integer.">function lengthOfLongestSubstring(s) {</span>
+<span class="code-line" data-explanation="Get the length of the string to set the loop boundary.">  let n = s.length;</span>
+<span class="code-line" data-explanation="Initialize 'maxLength' to 0. This will store our final answer.">  let maxLength = 0;</span>
+<span class="code-line" data-explanation="Initialize 'start' pointer of the window to index 0.">  let start = 0;</span>
+<span class="code-line" data-explanation="Create a map (or array) to store the most recent index + 1 of each character.">  const charIndex = {};</span>
+<span class="code-line" data-explanation="Loop through the string with the 'end' pointer, expanding the window.">  for (let end = 0; end < n; end++) {</span>
+<span class="code-line" data-explanation="Get the character at the current 'end' pointer position.">    let currentChar = s[end];</span>
+<span class="code-line" data-explanation="Check if the current character was seen before inside our current window. If so, move the 'start' pointer to the right of its last position.">    if (charIndex[currentChar] > start) { start = charIndex[currentChar]; }</span>
+<span class="code-line" data-explanation="Calculate the length of the current window and update 'maxLength' if it's the new longest.">    maxLength = Math.max(maxLength, end - start + 1);</span>
+<span class="code-line" data-explanation="Update the character's last seen position to the *next* index.">    charIndex[currentChar] = end + 1;</span>
+<span class="code-line" data-explanation="The loop finishes after checking all characters.">  }</span>
+<span class="code-line" data-explanation="Return the overall maximum length found.">  return maxLength;</span>
+<span class="code-line" data-explanation="End of function.">}</span>
+                    </code></pre>
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+    <script>
+        const stringInput = document.getElementById('string-input');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const stepBtn = document.getElementById('step-btn');
+        const stringContainer = document.getElementById('string-container');
+        const explanationText = document.getElementById('explanation-text');
+        
+        const currentCharEl = document.getElementById('current-char');
+        const startIndexEl = document.getElementById('start-index');
+        const endIndexEl = document.getElementById('end-index');
+        const maxLengthEl = document.getElementById('max-length');
+        const currentLengthEl = document.getElementById('current-length');
+        
+        const charIndexMapEl = document.getElementById('char-index-map');
+        const codeLines = document.querySelectorAll('.code-line');
+
+        let state = {};
+        let intervalId = null;
+
+        function resetState() {
+            const s = stringInput.value;
+            state = {
+                s: s,
+                n: s.length,
+                maxLength: 0,
+                start: 0,
+                end: 0,
+                charIndex: {},
+                isPlaying: false,
+                isFinished: false
+            };
+        }
+        
+        function updateUI() {
+            stringContainer.innerHTML = '';
+            const s = state.s;
+            const charWidth = 40; 
+        
+            for (let i = 0; i < s.length; i++) {
+                const charBox = document.createElement('div');
+                charBox.className = 'char-box w-10 h-10 flex items-center justify-center text-xl font-bold border-2 rounded-lg';
+                charBox.textContent = s[i];
+                charBox.style.position = 'absolute';
+                charBox.style.left = `calc(50% - ${s.length/2 * charWidth}px + ${i * charWidth}px)`;
+                
+                if (i >= state.start && i <= state.end) {
+                     charBox.classList.add('bg-teal-100', 'border-teal-400');
+                } else {
+                     charBox.classList.add('bg-stone-100', 'border-stone-300');
+                }
+                
+                if(i === state.end) {
+                    charBox.classList.add('transform', 'scale-110', 'shadow-md');
+                }
+
+                stringContainer.appendChild(charBox);
+            }
+
+            const startPointer = document.createElement('div');
+            startPointer.id = 'start-pointer';
+            startPointer.className = 'pointer absolute -bottom-10 text-center';
+            startPointer.innerHTML = `<span class="font-bold text-red-600">start</span><div class="text-red-600 text-2xl">▲</div>`;
+            startPointer.style.transform = `translateX(calc(50% - ${s.length/2 * charWidth}px + ${state.start * charWidth}px))`;
+            stringContainer.appendChild(startPointer);
+            
+            const endPointer = document.createElement('div');
+            endPointer.id = 'end-pointer';
+            endPointer.className = 'pointer absolute top-12 text-center';
+            endPointer.innerHTML = `<div class="text-blue-600 text-2xl">▼</div><span class="font-bold text-blue-600">end</span>`;
+            endPointer.style.transform = `translateX(calc(50% - ${s.length/2 * charWidth}px + ${state.end * charWidth}px))`;
+            stringContainer.appendChild(endPointer);
+
+            currentCharEl.textContent = s[state.end] || '-';
+            startIndexEl.textContent = state.start;
+            endIndexEl.textContent = state.end;
+            maxLengthEl.textContent = state.maxLength;
+            currentLengthEl.textContent = (state.end - state.start + 1);
+
+            updateCharIndexMap();
+        }
+        
+        function updateCharIndexMap() {
+            charIndexMapEl.innerHTML = '';
+            if (Object.keys(state.charIndex).length === 0) {
+                 charIndexMapEl.innerHTML = '<span class="text-stone-500">Empty</span>';
+                 return;
+            }
+            for (const [key, value] of Object.entries(state.charIndex)) {
+                const span = document.createElement('span');
+                span.className = 'bg-white px-2 py-1 rounded border border-stone-300';
+                span.innerHTML = `'<span class="font-bold text-teal-700">${key}</span>': <span class="text-fuchsia-600 font-bold">${value}</span>`;
+                charIndexMapEl.appendChild(span);
+            }
+        }
+
+        function highlightCode(lineNumber) {
+            codeLines.forEach(line => line.classList.remove('bg-yellow-300', 'text-black'));
+            if(lineNumber >=0 && lineNumber < codeLines.length) {
+                codeLines[lineNumber].classList.add('bg-yellow-300', 'text-black');
+            }
+        }
+        
+        function step() {
+            if (state.isFinished || state.end >= state.n) {
+                finish();
+                return;
+            }
+            
+            const s = state.s;
+            const end = state.end;
+            const currentChar = s[end];
+
+            explanationText.textContent = `Processing character '${currentChar}' at index ${end}.`;
+            highlightCode(7);
+
+            setTimeout(() => {
+                const lastSeenIndex = state.charIndex[currentChar];
+                if (lastSeenIndex !== undefined && lastSeenIndex > state.start) {
+                    explanationText.innerHTML = `Character '<span class="font-bold">${currentChar}</span>' is a duplicate inside the current window. Its last seen position + 1 is ${lastSeenIndex}. The current start is ${state.start}. We must slide the window.`;
+                    highlightCode(8);
+                    state.start = lastSeenIndex;
+                } else {
+                     explanationText.innerHTML = `Character '<span class="font-bold">${currentChar}</span>' is unique in the current window. The window can expand.`;
+                     highlightCode(8);
+                }
+
+                setTimeout(() => {
+                    const currentLength = end - state.start + 1;
+                    explanationText.innerHTML = `Current window length is ${currentLength}. The max length so far is ${state.maxLength}.`;
+                    highlightCode(9);
+
+                    if (currentLength > state.maxLength) {
+                        state.maxLength = currentLength;
+                        explanationText.innerHTML += ` New max length found! Updating to <span class="font-bold">${state.maxLength}</span>.`;
+                    }
+
+                    setTimeout(() => {
+                        explanationText.innerHTML = `Updating the lookup table for character '<span class="font-bold">${currentChar}</span>'. Setting its next start position to ${end + 1}.`;
+                        state.charIndex[currentChar] = end + 1;
+                        highlightCode(10);
+                        
+                        state.end++;
+                        if (state.end >= state.n) {
+                            finish();
+                        } else {
+                            updateUI();
+                        }
+                    }, state.isPlaying ? 1500 : 0);
+                }, state.isPlaying ? 1500 : 0);
+            }, state.isPlaying ? 1000 : 0);
+             
+            updateUI();
+        }
+
+        function finish() {
+            state.isFinished = true;
+            state.isPlaying = false;
+            clearInterval(intervalId);
+            playPauseBtn.textContent = 'Play';
+            playPauseBtn.disabled = true;
+            stepBtn.disabled = true;
+            explanationText.innerHTML = `Algorithm finished. The longest substring without repeating characters has a length of <span class="font-bold text-2xl text-green-600">${state.maxLength}</span>.`;
+            highlightCode(12);
+            updateUI();
+        }
+
+        function playPause() {
+            if (state.isFinished) return;
+
+            state.isPlaying = !state.isPlaying;
+            if (state.isPlaying) {
+                playPauseBtn.textContent = 'Pause';
+                stepBtn.disabled = true;
+                step(); 
+                intervalId = setInterval(step, 4500);
+            } else {
+                playPauseBtn.textContent = 'Play';
+                stepBtn.disabled = false;
+                clearInterval(intervalId);
+            }
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (!stringInput.value) {
+                explanationText.textContent = "Please enter a string first.";
+                return;
+            }
+            clearInterval(intervalId);
+            resetState();
+            playPauseBtn.disabled = false;
+            stepBtn.disabled = false;
+            explanationText.textContent = "Algorithm initialized. Press 'Play' or 'Step' to begin.";
+            updateUI();
+            highlightCode(-1);
+        });
+
+        resetBtn.addEventListener('click', () => {
+            clearInterval(intervalId);
+            stringInput.value = 'abcabcbb';
+            resetState();
+            state.isFinished = true;
+            playPauseBtn.disabled = true;
+            stepBtn.disabled = true;
+            playPauseBtn.textContent = 'Play';
+            stringContainer.innerHTML = '';
+            currentCharEl.textContent = '-';
+            startIndexEl.textContent = '-';
+            endIndexEl.textContent = '-';
+            maxLengthEl.textContent = '-';
+            currentLengthEl.textContent = '-';
+            explanationText.textContent = "Enter a string and click 'Visualize' to begin.";
+            charIndexMapEl.innerHTML = '<span class="text-stone-500">Empty</span>';
+            highlightCode(-1);
+        });
+        
+        playPauseBtn.addEventListener('click', playPause);
+        stepBtn.addEventListener('click', () => {
+             if (!state.isPlaying) {
+                 step();
+             }
+        });
+        
+        codeLines.forEach(line => {
+            line.addEventListener('mouseenter', () => {
+                const explanation = line.getAttribute('data-explanation');
+                if (!state.isPlaying && !state.isFinished && explanation) {
+                    explanationText.textContent = explanation;
+                }
+            });
+            line.addEventListener('mouseleave', () => {
+                 if (!state.isPlaying && !state.isFinished) {
+                   explanationText.textContent = "Hover over another line or press Step/Play to continue.";
+                 }
+            });
+        });
+
+    </script>
+</body>
+</html>

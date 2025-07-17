@@ -23,8 +23,7 @@ public class RemoveSpacesFromString {
             noSpaces.append(original.charAt(i));
         }
         System.out.println(original);
-        System.out.println(noSpaces.toString());
-
+        System.out.println(noSpaces);
     }
 
     private static void usingReplaceAll(String original) {
