@@ -19,9 +19,9 @@ public class PartitioningBy {
         List<String> words = Arrays.asList("apple", "bat", "elephant", "cat", "igloo", "dog", "jkmama");
         Map<Boolean, List<String>> result = words.stream()
                 .collect(Collectors.partitioningBy(a -> "aeiou".indexOf(Character.toLowerCase(a.charAt(0))) > 0));
-        for (boolean flag : result.keySet()) {
-            System.out.println(flag);
-            System.out.println(result.get(flag));
+        for (Map.Entry<Boolean, List<String>> entry : result.entrySet()) {
+            System.out.println(entry.getKey());
+            System.out.println(entry.getValue());
         }
     }
 
