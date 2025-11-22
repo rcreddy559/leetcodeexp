@@ -14,7 +14,6 @@ public class OtherStringStreamApi {
         strings.stream()
                 .filter(s -> s.matches("\\d+"))
                 .forEach(System.out::println);
-
     }
 
     private static void maskMobileNumbers() {
