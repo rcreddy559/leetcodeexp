@@ -1,8 +1,10 @@
 package com.collections.java8;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -61,9 +63,9 @@ public class Java8Demo {
     }
 
     static void countNumberOfStringOccurrence() {
-        String[] words = { "apple", "banana", "apple", "orange", "apple", "apple", "banana", "apple", "orange",
+        String[] words = { "apple", "banana", "apple", "orange", "apple", "apple", "banana", "apple", "orange", null,
                 "banana", "kiwi", "kiwi", "kiwi" };
-        Map<String, Long> map = List.of(words).stream()
+        Map<String, Long> map = Arrays.stream(words).filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
         System.out.println("String occurrences: " + map);
     }
