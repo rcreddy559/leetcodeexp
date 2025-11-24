@@ -147,6 +147,6 @@ public class GroupByDemo {
     }
 
     public static void main(String[] args) {
-        findWordsCount();
+        groupDepartmentAndCollectNamesSet();
     }
 }

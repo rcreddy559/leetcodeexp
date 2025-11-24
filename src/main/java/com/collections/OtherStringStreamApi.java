@@ -1,4 +1,4 @@
-package com.strings;
+package com.collections;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ public class OtherStringStreamApi {
 
     private static void filterNumbersOnly() {
         String[] arr = { "abc", "123", "a1b2", "456", "def" };
+
         List<String> strings = List.of(arr);
         strings.stream()
                 .filter(s -> s.matches("\\d+"))
