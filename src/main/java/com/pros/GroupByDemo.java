@@ -70,12 +70,12 @@ public class GroupByDemo {
             System.out.println(gropByDepartment.get(dep));
         }
 
-        Map<String, Long> grepuByDepartmentCounting = employees.stream()
+        Map<String, Long> groupByDepartmentCounting = employees.stream()
                 .collect(Collectors.groupingBy(Employee::getDepartment, Collectors.counting()));
-        for (String dep : grepuByDepartmentCounting.keySet()) {
+        for (String dep : groupByDepartmentCounting.keySet()) {
             System.out.println("==========================================");
             System.out.println(dep);
-            System.out.println(grepuByDepartmentCounting.get(dep));
+            System.out.println(groupByDepartmentCounting.get(dep));
         }
     }
 

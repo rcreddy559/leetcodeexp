@@ -13,6 +13,7 @@ import lombok.Setter;
 @Builder
 public class Employee {
 
+    // Getters and Setters
     private String employeeId;
 
     private String firstName;
@@ -37,17 +38,8 @@ public class Employee {
 
     private int age;
 
-    // Getters and Setters
-    public String getEmployeeId() {
-        return employeeId;
-    }
-
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
-    }
-
-    public String getFirstName() {
-        return firstName;
     }
 
     public void setFirstName(String firstName) {
